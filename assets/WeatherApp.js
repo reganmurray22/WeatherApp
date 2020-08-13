@@ -2,20 +2,20 @@ $(document).ready(function() {
     // initial array of saved cities
     let citiesList = JSON.parse(localStorage.getItem("savedCitiesList") || "[]");
     renderCityButtons();
-    var selectCity = "Minneapolis";
+    var selectCity = citiesList[citiesList.length - 1] || "Minneapolis";
     getForecast(selectCity);
     
         $("#search").on("click", function(event){
             event.preventDefault();
-            selectCity = $("#city-input").val().trim();
-            citiesList.push(selectCity);
+            var newCity = $("#city-input").val().trim();
+            citiesList.push(newCity);
             localStorage.setItem("savedCitiesList", JSON.stringify(citiesList));
             renderCityButtons();
-            getForecast(selectCity);
+            getForecast(newCity);
     });
 
 
-function getForecast() {  
+function getForecast(currentCity) {  
 
     $("#chosenCity").empty();
     $("#fiveDayForecast").empty();
@@ -24,7 +24,7 @@ function getForecast() {
 
 // Creates AJAX call for the specific movie button being clicked       
         $.ajax({
-            url:"https://api.openweathermap.org/data/2.5/weather?q=" + selectCity + "&appid=33c63abdc074bfb89c02e1a51923b28a",
+            url:"https://api.openweathermap.org/data/2.5/weather?q=" + currentCity + "&appid=33c63abdc074bfb89c02e1a51923b28a",
             method: "GET"
         }).then(function forecast(response) {
           console.log(response);
@@ -96,7 +96,7 @@ function getForecast() {
             fiveDayArray = [];
 
 //loop to pull out the necessary data from the API call increasing index by 8
-            for (var f = 1; f<=33; f += 8) { 
+            for (var f = 2; f<=34; f += 8) { 
                 var day = (response.list[f].dt_txt.split(" ")[0]);
                 var weatherIcon = ("https://openweathermap.org/img/wn/" + response.list[f].weather[0].icon  + "@2x.png");
                 var forecast = ("Weather: " + response.list[f].weather[0].description);
@@ -130,15 +130,14 @@ function renderCityButtons(array) {
     $('#searchList').empty();
     for (var i = 0; i < citiesList.length; i++) {
         var x = $("<button>").addClass("city").attr("data-name", citiesList[i]).text(citiesList[i]);
-        $("#searchList").append(x); 
+        $("#searchList").prepend(x); 
     }
 }
 
 
 //add event listener to all city buttons
-        $(".city").on("click", ".city", function (){
-            savedCity = $(this).attr("data-name");
-            getForecast(savedCity);
+        $(document).on("click", ".city", function (){
+            getForecast($(this).attr("data-name"));
         });
     });
 
