@@ -1,18 +1,9 @@
-// initial array of saved 
+// initial array of saved cities
 let citiesList = JSON.parse(localStorage.getItem("savedCitiesList") || "[]");
+renderCityButtons();
 
 
-let selectCity = "";
-renderCityButtons(citiesList); 
-
-//search city
-$(document).ready(function() {
-    $("#search").on("click", function() {
-        $("#chosenCity").empty();
-
-        var selectCity = $("#city-input").val();     
-
-        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + selectCity + "&appid=33c63abdc074bfb89c02e1a51923b28a";        
+function getForecast() {            
   
 // Creates AJAX call for the specific movie button being clicked       
         $.ajax({
@@ -52,46 +43,77 @@ $(document).ready(function() {
 
 //All items can be chained in jQuery.
             $("#chosenCity").prepend(cityName, weatherIcon, weatherDescription, temperature, humidity);
-
         });
-    }); 
-});
+ 
+//second API call for five day
+        $.ajax({
+            url:"https://api.openweathermap.org/data/2.5/forecast?q=" + selectCity + "&appid=33c63abdc074bfb89c02e1a51923b28a",
+            method: "GET"
+        }).then(function forecast(response) { 
+            
+//create initial empty array
+            fiveDayArray = [];
 
-//add city
-$("#add-city").on("click", function addCity(){
-        var newCity = $(selectCity).val();
-        citiesList.push(newCity);
-        console.log(citiesList);
-        localStorage.setItem("savedCitiesList", JSON.stringify(citiesList));
- });
+//loop to pull out the necessary data from the API call increasing index by 8
+            for (var f = 1; f<=33; f += 8) { 
+                var day = (response.list[f].dt_txt.split(" ")[0]);
+                var weatherIcon = (response.list[f].weather[0].icon);
+                var forecast = ('Weather: ' + response.list[f].weather[0].description);
+                    var fahrenheitTemp = Math.floor((response.list[f].main.temp - 273.15) * 1.8 + 32); 
+                var temp = ('Temperature: ' + fahrenheitTemp);
+                var humid = ('Humidity: ' + response.list[f].main.humidity + "%");
+ 
+//creating an object representing the forecast for each day
+                let fiveDayObject = {day, forecast, temp, humid};
 
-//create city buttons
-function renderCityButtons(array) {
-        $('#citiesList').empty();
-        for (var i = 0; i < citiesList.length; i++) {
-        var x = $("<button>").addClass("city").attr("data-name", citiesList[i]).text(citiesList[i]);
-        $("#citiesList").append(x); 
-        }
+//pushing all five objects into the initial array
+                fiveDayArray.push(fiveDayObject);
+            }
+
+//building out each card  
+            fiveDayArray.forEach(function (days) {
+
+                var cardBody = $("<div>").attr("class", "card text-white bg-primary mb-3",);
+                $("#fiveDayForecast").append(cardBody);
+                var thisDay = $("<div>").text(`${days.day}`);
+                var icon = (`${days.weatherIcon}`)
+                var thisIcon = $('<img />').attr("src", "http://openweathermap.org/img/wn/" + icon + "@2x.png");
+                var thisForecast = $("<div>").text(`${days.forecast}`);
+                var thisTemp = $("<div>").text(`${days.temp}`);
+                var thisHumid = $("<div>").text(`${days.humid}`);
+                $(".card").append(thisDay, thisIcon,thisForecast, thisTemp,thisHumid);
+             });
+        });
 }
-renderCityButtons ();
+
+function renderCityButtons() {
+    $('#searchList').empty();
+    for (var i = 0; i < citiesList.length; i++) {
+        var x = $("<button>").addClass("city").attr("data-name", citiesList[i]).text(citiesList[i]);
+        $("#searchList").append(x); 
+    }
+}
+
+$(document).ready(function() {
+    $("#search").on("click", function(event){
+        event.preventDefault();
+        selectCity = $("#city-input").val().trim();
+        getForecast(selectCity);
+
+//add city to saved cities
+        $("#add-city").on("click", function addCity(){
+            var newCity = $(selectCity).val();
+            citiesList.push(newCity);
+            localStorage.setItem("savedCitiesList", JSON.stringify(citiesList));
+        });
+
+    })
+
 
 //add event listener to all city buttons
- $(".city").on("click", function (){
-        selectCity = $(this).attr("data-name");
-        forecast(selectCity);
-});
+        $(".city").on("click", ".city", function (){
+            savedCity = $(this).attr("data-name");
+            getForecast(savedCity);
+        });
+    });
 
-//five day forecasts
- /*           const cityName = $("<h2>").attr("font-size", "30px").attr("font-weight", "bold");
-            const currentTime = $("<p>");
-            const weatherIcon = $('<img />').attr("src", "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png");
-            const temperature = $("<p>");
-            const humidity = $("<p>");
-
-for (var f = 1; f<=33; f += 8) {
-date1.text(response.list[f].dt_txt);
-currentWeather1.text('Weather: ' + response.list[f].weather[0].description);
-cityTemp1.text('Temperature: ' + response.main.temp);
-cityHumid1.text('Humidity: ' + response.list[f].main.humidity);
-
-}*/
