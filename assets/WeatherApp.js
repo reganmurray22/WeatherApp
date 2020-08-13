@@ -96,7 +96,7 @@ function getForecast() {
             fiveDayArray = [];
 
 //loop to pull out the necessary data from the API call increasing index by 8
-            for (var f = 1; f<=33; f += 8) { 
+            for (var f = 2; f<=34; f += 8) { 
                 var day = (response.list[f].dt_txt.split(" ")[0]);
                 var weatherIcon = ("https://openweathermap.org/img/wn/" + response.list[f].weather[0].icon  + "@2x.png");
                 var forecast = ("Weather: " + response.list[f].weather[0].description);
