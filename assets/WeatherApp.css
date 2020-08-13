@@ -37,6 +37,9 @@ margin: 3px 15px 3px 15px;
     border-radius: 5px;
     margin: 15px 45px 15px 15px;
 }
+h3{
+    margin-left: 15px;
+}
 
 #add-city {
     font-size: 20px;
