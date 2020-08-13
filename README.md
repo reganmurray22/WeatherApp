@@ -10,4 +10,4 @@ Further, it not only displays the chosen city's UV index, but the index is color
 
 
 # Project Link
-https://reganmurray22.github.io/WeatherApp/
+https://reganmurray22.github.io/WeatherApp/WeatherApp.html
