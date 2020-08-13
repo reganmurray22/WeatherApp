@@ -6,6 +6,10 @@
     text-align: center;
 }
 
+#pageContainer {
+    background-image: linear-gradient(to bottom right, rgb(59, 192, 236), rgb(218, 240, 247)); 
+}
+
 .col {
     padding: 0;
 }
@@ -44,7 +48,9 @@ margin: 10px 15px 3px 15px;
     border: 1px solid black;
     border-radius: 5px;
     margin: 15px 45px 15px 15px;
+    background-color: white;
 }
+
 h3{
     margin-left: 15px;
 }

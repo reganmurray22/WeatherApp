@@ -1,12 +1,26 @@
-// initial array of saved cities
-let citiesList = JSON.parse(localStorage.getItem("savedCitiesList") || "[]");
-renderCityButtons();
+$(document).ready(function() {
+    // initial array of saved cities
+    let citiesList = JSON.parse(localStorage.getItem("savedCitiesList") || "[]");
+    renderCityButtons();
+    var selectCity = "Minneapolis";
+    getForecast(selectCity);
+    
+        $("#search").on("click", function(event){
+            event.preventDefault();
+            selectCity = $("#city-input").val().trim();
+            citiesList.push(selectCity);
+            localStorage.setItem("savedCitiesList", JSON.stringify(citiesList));
+            renderCityButtons();
+            getForecast(selectCity);
+    });
 
 
-function getForecast() {            
+function getForecast() {  
 
-var lat = "";
-var lon = "";    
+    $("#chosenCity").empty();
+    $("#fiveDayForecast").empty();
+    var lat = "";
+    var lon = "";    
 
 // Creates AJAX call for the specific movie button being clicked       
         $.ajax({
@@ -119,18 +133,6 @@ function renderCityButtons(array) {
         $("#searchList").append(x); 
     }
 }
-
-$(document).ready(function() {
-    $("#search").on("click", function(event){
-        event.preventDefault();
-        selectCity = $("#city-input").val().trim();
-        citiesList.push(selectCity);
-        localStorage.setItem("savedCitiesList", JSON.stringify(citiesList));
-        renderCityButtons();
-        getForecast(selectCity);
-});
-
-    
 
 
 //add event listener to all city buttons
