@@ -6,7 +6,7 @@ The user searches for a city, and is presented with the current weather forecast
 
 The information includes the city name, the date, an icon representation of weather conditions, the temperature, and the humidity.
 
-Further, it not only displays the chosen city's UV index, but the index is color-coded to indicates whether the conditions are favorable (green), moderate (yellow or orange), or severe (red).
+Further, it not only displays the chosen city's UV index, but the index is color-coded to indicate whether the conditions are favorable (green), moderate (yellow or orange), or severe (red).
 
 
 # Project Link
